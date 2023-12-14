@@ -1,6 +1,8 @@
 package ru.protei.barbolinsp.ui.notes
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -32,6 +36,9 @@ import ru.protei.barbolinsp.domain.Note
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
+    val notes by notesViewModel.notes.collectAsState()
+    val selectedNote by notesViewModel.selectedNote.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -41,6 +48,20 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
                     titleContentColor = MaterialTheme.colorScheme.onBackground,
                     actionIconContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
+
+                navigationIcon = {
+                    AnimatedVisibility(visible = selectedNote != null) {
+                        IconButton(onClick = { notesViewModel.clearSelectedNote() }) {
+                            Icon(
+                                modifier = Modifier.size(32.dp),
+                                painter = painterResource(id = R.drawable.ic_arrow_back),
+                                contentDescription = "change theme",
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                },
+
                 actions = {
                     IconButton(onClick = changeTheme) {
                         Icon(
@@ -52,12 +73,33 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
                     }
                 }
             )
-        }
+        },
+        floatingActionButton = {
+            val agree by animateFloatAsState(targetValue = if (selectedNote == null) 90f else 0f,
+                animationSpec = tween(600),
+                label = ""
+            )
+
+            FloatingActionButton(
+                modifier = Modifier.rotate(agree),
+                onClick = {
+                }) {
+                AnimatedVisibility(visible = selectedNote == null) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add),
+                        contentDescription = "add note"
+                    )
+                }
+
+                AnimatedVisibility(visible = selectedNote != null) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_edit),
+                        contentDescription = "add note"
+                    )
+                }
+            }
+        },
     ) {
-        val notes by notesViewModel.notes.collectAsState()
-        val selectedNote by notesViewModel.selectedNote.collectAsState()
-
-
         AnimatedVisibility(visible = selectedNote != null) {
             DetailNotesScreen(
                 modifier = Modifier.padding(it),
