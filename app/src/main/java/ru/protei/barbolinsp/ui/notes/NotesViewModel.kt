@@ -11,7 +11,22 @@ class NotesViewModel : ViewModel() {
     val selectedNote: StateFlow<Note?>
         get() = _selectedNote
 
-    private val _notes = MutableStateFlow<List<Note>>(emptyList())
+    private val _notes = MutableStateFlow<List<Note>>(
+        listOf(
+            Note(title = "Note 1", text = "Description 1"),
+            Note(title = "Note 2", text = "Description 2"),
+            Note(
+                title = "Note 3",
+                text = "Лол, с Гугл Драйва пропала тонна файлов — юзеры говорят, что утеряны все данные, загруженные после мая 2023 года.\n" +
+                        "\n" +
+                        "Чуваки с Гугл в шоке, но пока проводится расследование, всех пострадавших просят ничего не трогать у себя на Диске.\n" +
+                        "\n" +
+                        "Тут могла быть нативная реклама, но не сегодня."
+            ),
+            Note(title = "Note 4", text = "Description 4"),
+            Note(title = "Note 5", text = "Description 5"),
+        )
+    )
     val notes: StateFlow<List<Note>>
         get() = _notes
 
@@ -49,6 +64,7 @@ class NotesViewModel : ViewModel() {
         _notes.value = temp
         _selectedNote.value = newNote
     }
+
     fun removeNote(id: String) {
         _notes.value = _notes.value.filter { it.id != id }
     }
