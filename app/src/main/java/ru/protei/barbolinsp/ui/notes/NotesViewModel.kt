@@ -40,22 +40,26 @@ class NotesViewModel : ViewModel() {
     }
 
     fun editSelectedNote(
-        title: String? = null,
-        text: String? = null
+        title: String = "",
+        text: String = ""
     ) {
-        _selectedNote.update { note ->
-            Note(
-                id = note!!.id,
-                title = title ?: note.title, // Мы уверены, что это не null
-                text = text ?: note.text
-            )
-        }
+        if (title.isEmpty() && text.isEmpty()) {
+            removeNote(_selectedNote.value!!.id)
+        } else {
+            _selectedNote.update { note ->
+                Note(
+                    id = note!!.id,
+                    title = title ?: note.title, // Мы уверены, что это не null
+                    text = text ?: note.text
+                )
+            }
 
-        val temp = _notes.value.toMutableList()
-        val index = temp.indexOfFirst { it.id == selectedNote.value!!.id }
-        Log.i("QWE", "index = $index temp = ${temp.size}")
-        temp[index] = selectedNote.value!!
-        _notes.value = temp
+            val temp = _notes.value.toMutableList()
+            val index = temp.indexOfFirst { it.id == selectedNote.value!!.id }
+            Log.i("QWE", "index = $index temp = ${temp.size}")
+            temp[index] = selectedNote.value!!
+            _notes.value = temp
+        }
         _selectedNote.value = null
     }
 
