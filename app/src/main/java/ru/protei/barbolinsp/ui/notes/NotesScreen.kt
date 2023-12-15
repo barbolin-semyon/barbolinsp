@@ -47,67 +47,16 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Skat.apps") },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    actionIconContentColor = MaterialTheme.colorScheme.onBackground,
-                ),
-
-                navigationIcon = {
-                    AnimatedVisibility(visible = selectedNote != null) {
-                        IconButton(onClick = { notesViewModel.clearSelectedNote() }) {
-                            Icon(
-                                modifier = Modifier.size(32.dp),
-                                painter = painterResource(id = R.drawable.ic_arrow_back),
-                                contentDescription = "change theme",
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    }
-                },
-
-                actions = {
-                    IconButton(onClick = changeTheme) {
-                        Icon(
-                            modifier = Modifier.size(48.dp),
-                            painter = painterResource(id = R.drawable.ic_change_theme),
-                            contentDescription = "change theme",
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
-                }
-            )
+            NotesAppBar(selectedNote != null, changeTheme) {
+                notesViewModel.clearSelectedNote()
+            }
         },
         floatingActionButton = {
-            val agree by animateFloatAsState(
-                targetValue = if (selectedNote == null) 90f else 0f,
-                animationSpec = tween(600),
-                label = ""
-            )
-
-            FloatingActionButton(
-                modifier = Modifier.rotate(agree),
-                onClick = {
-                    if (selectedNote != null) {
-                        notesViewModel.editSelectedNote(title, text)
-                    } else {
-                        notesViewModel.addSelectedNote("", "")
-                    }
-                }) {
-                AnimatedVisibility(visible = selectedNote == null) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_add),
-                        contentDescription = "add note"
-                    )
-                }
-
-                AnimatedVisibility(visible = selectedNote != null) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_check),
-                        contentDescription = "add note"
-                    )
+            NotesFub(isSelectedNote = selectedNote != null) {
+                if (selectedNote != null) {
+                    notesViewModel.editSelectedNote(title, text)
+                } else {
+                    notesViewModel.addSelectedNote("", "")
                 }
             }
         },
