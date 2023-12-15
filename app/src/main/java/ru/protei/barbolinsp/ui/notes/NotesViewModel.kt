@@ -1,5 +1,6 @@
 package ru.protei.barbolinsp.ui.notes
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +31,6 @@ class NotesViewModel : ViewModel() {
     val notes: StateFlow<List<Note>>
         get() = _notes
 
-    fun isSelectedNote() = _selectedNote.value != null
-
     fun setSelectedNote(note: Note) {
         _selectedNote.value = note
     }
@@ -46,15 +45,18 @@ class NotesViewModel : ViewModel() {
     ) {
         _selectedNote.update { note ->
             Note(
-                title = title ?: note!!.title, // Мы уверены, что это не null
-                text = text ?: note!!.text
+                id = note!!.id,
+                title = title ?: note.title, // Мы уверены, что это не null
+                text = text ?: note.text
             )
         }
 
         val temp = _notes.value.toMutableList()
         val index = temp.indexOfFirst { it.id == selectedNote.value!!.id }
+        Log.i("QWE", "index = $index temp = ${temp.size}")
         temp[index] = selectedNote.value!!
         _notes.value = temp
+        _selectedNote.value = null
     }
 
     fun addSelectedNote(title: String, text: String) {

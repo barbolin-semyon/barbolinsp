@@ -25,6 +25,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
@@ -37,7 +40,10 @@ import ru.protei.barbolinsp.domain.Note
 @Composable
 fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
     val notes by notesViewModel.notes.collectAsState()
+
     val selectedNote by notesViewModel.selectedNote.collectAsState()
+    var title by remember(selectedNote) { mutableStateOf(selectedNote?.title ?: "") }
+    var text by remember(selectedNote) { mutableStateOf(selectedNote?.text ?: "") }
 
     Scaffold(
         topBar = {
@@ -75,7 +81,8 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
             )
         },
         floatingActionButton = {
-            val agree by animateFloatAsState(targetValue = if (selectedNote == null) 90f else 0f,
+            val agree by animateFloatAsState(
+                targetValue = if (selectedNote == null) 90f else 0f,
                 animationSpec = tween(600),
                 label = ""
             )
@@ -83,6 +90,11 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
             FloatingActionButton(
                 modifier = Modifier.rotate(agree),
                 onClick = {
+                    if (selectedNote != null) {
+                        notesViewModel.editSelectedNote(title, text)
+                    } else {
+                        notesViewModel.addSelectedNote("", "")
+                    }
                 }) {
                 AnimatedVisibility(visible = selectedNote == null) {
                     Icon(
@@ -93,7 +105,7 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
 
                 AnimatedVisibility(visible = selectedNote != null) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_edit),
+                        painter = painterResource(id = R.drawable.ic_check),
                         contentDescription = "add note"
                     )
                 }
@@ -103,7 +115,10 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
         AnimatedVisibility(visible = selectedNote != null) {
             DetailNotesScreen(
                 modifier = Modifier.padding(it),
-                note = selectedNote ?: Note(title = "", text = ""),
+                title = title,
+                text = text,
+                onChangeTitle = { title = it },
+                onChangeText = { text = it }
             ) {
                 notesViewModel.clearSelectedNote()
             }
