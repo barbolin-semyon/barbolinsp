@@ -11,10 +11,10 @@ import ru.protei.barbolinsp.domain.Note
 @Dao
 interface NotesDao {
     @Query("SELECT * FROM note")
-    fun getAll(): Flow<List<Note>>
+    fun getAllOfSortedAsc(): Flow<List<Note>>
 
-    @Query("SELECT * FROM note ORDER BY id ASC")
-    fun getAllOfSortedASC(): Flow<List<Note>>
+    @Query("SELECT * FROM note ORDER BY id DESC")
+    fun getAllOfSortedDesc(): Flow<List<Note>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(note: Note): Long

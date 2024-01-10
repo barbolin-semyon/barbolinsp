@@ -9,15 +9,14 @@ import ru.protei.barbolinsp.domain.NotesRepository
 
 class NotesRepositoryDB (
     private val notesDao: NotesDao,
-    override var notes: Flow<List<Note>>
 ) : NotesRepository {
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-    override suspend fun getAllNotes(): Flow<List<Note>> = withContext(ioDispatcher) {
-        return@withContext notesDao.getAll()
+    override suspend fun getAllNotesOfSortedAsc(): Flow<List<Note>> = withContext(ioDispatcher) {
+        return@withContext notesDao.getAllOfSortedAsc()
     }
 
-    override suspend fun getAllNotesOfSortedASC(): Flow<List<Note>> = withContext(ioDispatcher) {
-        return@withContext notesDao.getAllOfSortedASC()
+    override suspend fun getAllNotesOfSortedDesc(): Flow<List<Note>> = withContext(ioDispatcher) {
+        return@withContext notesDao.getAllOfSortedDesc()
     }
     override suspend fun insert(note: Note): Long =  withContext(ioDispatcher) {
         return@withContext notesDao.insert(note)
