@@ -1,51 +1,66 @@
 package ru.protei.barbolinsp.ui.notes
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import ru.protei.barbolinsp.domain.Note
+import ru.protei.barbolinsp.domain.NotesUseCase
 
-class NotesViewModel : ViewModel() {
+class NotesViewModel(
+    private val notesUseCase: NotesUseCase
+) : ViewModel() {
     private val _selectedNote = MutableStateFlow<Note?>(null)
     val selectedNote: StateFlow<Note?>
         get() = _selectedNote
 
-    private val _notes = MutableStateFlow<List<Note>>(
-        listOf(
-            Note(title = "Note 1", text = "Description 1"),
-            Note(title = "Note 2", text = "Description 2"),
-            Note(
-                title = "Note 3",
-                text = "Лол, с Гугл Драйва пропала тонна файлов — юзеры говорят, что утеряны все данные, загруженные после мая 2023 года.\n" +
-                        "\n" +
-                        "Чуваки с Гугл в шоке, но пока проводится расследование, всех пострадавших просят ничего не трогать у себя на Диске.\n" +
-                        "\n" +
-                        "Тут могла быть нативная реклама, но не сегодня."
-            ),
-            Note(title = "Note 4", text = "Description 4"),
-            Note(title = "Note 5", text = "Description 5"),
-        )
-    )
+    private val _notes = MutableStateFlow<List<Note>>(emptyList())
     val notes: StateFlow<List<Note>>
         get() = _notes
 
-    fun setSelectedNote(note: Note) {
+    init {
+        viewModelScope.launch {
+            notesUseCase.notesFlow()
+                .collect {
+                    _notes.value = it
+                }
+        }
+
+        /*viewModelScope.launch {
+            notesUseCase.fillWithInitialNotes(
+                listOf(
+                    Note(title = "Note 1", text = "Description 1"),
+                    Note(title = "Note 2", text = "Description 2"),
+                    Note(
+                        title = "Note 3",
+                        text = "Лол, с Гугл Драйва пропала тонна файлов — юзеры говорят, что утеряны все данные, загруженные после мая 2023 года.\n" +
+                                "\n" +
+                                "Чуваки с Гугл в шоке, но пока проводится расследование, всех пострадавших просят ничего не трогать у себя на Диске.\n" +
+                                "\n" +
+                                "Тут могла быть нативная реклама, но не сегодня."
+                    ),
+                    Note(title = "Note 4", text = "Description 4"),
+                    Note(title = "Note 5", text = "Description 5"),
+                )
+            )
+        }*/
+    }
+
+    fun onSelectNote(note: Note = Note(title = "", text = "")) {
         _selectedNote.value = note
     }
 
-    fun clearSelectedNote() {
+    fun onClearSelectedNote() {
         _selectedNote.value = null
     }
 
-    fun editSelectedNote(
+    fun onSaveNote(
         title: String = "",
         text: String = ""
     ) {
-        if (title.isEmpty() && text.isEmpty()) {
-            removeNote(_selectedNote.value!!.id)
-        } else {
+        if (title.isNotEmpty() && text.isNotEmpty()) {
             _selectedNote.update { note ->
                 Note(
                     id = note!!.id,
@@ -53,25 +68,16 @@ class NotesViewModel : ViewModel() {
                     text = text ?: note.text
                 )
             }
-
-            val temp = _notes.value.toMutableList()
-            val index = temp.indexOfFirst { it.id == selectedNote.value!!.id }
-            Log.i("QWE", "index = $index temp = ${temp.size}")
-            temp[index] = selectedNote.value!!
-            _notes.value = temp
+            viewModelScope.launch {
+                notesUseCase.save(note = _selectedNote.value!!, actualNotes = _notes.value)
+            }
         }
         _selectedNote.value = null
     }
 
-    fun addSelectedNote(title: String, text: String) {
-        val newNote = Note(title = title, text = text)
-        val temp = _notes.value.toMutableList()
-        temp.add(newNote)
-        _notes.value = temp
-        _selectedNote.value = newNote
-    }
-
-    fun removeNote(id: String) {
-        _notes.value = _notes.value.filter { it.id != id }
+    fun onRemoveNote(id: Long) {
+        viewModelScope.launch {
+            notesUseCase.deleteById(id)
+        }
     }
 }
