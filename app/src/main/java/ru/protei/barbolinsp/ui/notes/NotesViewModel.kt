@@ -75,9 +75,15 @@ class NotesViewModel(
         _selectedNote.value = null
     }
 
-    fun onRemoveNote(id: Long) {
+    fun onDeleteNoteById(id: Long) {
         viewModelScope.launch {
             notesUseCase.deleteById(id)
+        }
+    }
+
+    fun onDeleteAllNotes() {
+        viewModelScope.launch {
+            notesUseCase.deleteAll()
         }
     }
 }

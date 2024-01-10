@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 class NotesUseCase(private val notesRepository: NotesRepository) {
     suspend fun fillWithInitialNotes(initialNotes: List<Note>) {
+        notesRepository.deleteAll()
         for (note in initialNotes) {
             notesRepository.insert(note)
         }
