@@ -7,18 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailNotesScreen(
     modifier: Modifier,
@@ -42,8 +40,8 @@ fun DetailNotesScreen(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             colors = TextFieldDefaults.textFieldColors(
-                textColor = MaterialTheme.colorScheme.onBackground,
-                containerColor = Color(0x00FFFFFF)
+                textColor = MaterialTheme.colors.onBackground,
+                backgroundColor = Color(0x00FFFFFF)
             ),
             onValueChange = onChangeTitle,
             label = { Text(text = "Title") }
@@ -52,8 +50,8 @@ fun DetailNotesScreen(
         OutlinedTextField(
             value = text,
             colors = TextFieldDefaults.textFieldColors(
-                textColor = MaterialTheme.colorScheme.onBackground,
-                containerColor = Color(0x00FFFFFF)
+                textColor = MaterialTheme.colors.onBackground,
+                backgroundColor = Color(0x00FFFFFF)
             ),
             onValueChange = onChangeText,
             modifier = Modifier

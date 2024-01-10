@@ -9,11 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,10 +24,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ru.protei.barbolinsp.domain.Note
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
-    val notes by notesViewModel.notes.collectAsState()
+    val notes by notesViewModel.notes.collectAsState() // Список заметок
 
     val selectedNote by notesViewModel.selectedNote.collectAsState()
     var title by remember(selectedNote) { mutableStateOf(selectedNote?.title ?: "") }
@@ -37,15 +35,15 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
     Scaffold(
         topBar = {
             NotesAppBar(selectedNote != null, changeTheme) {
-                notesViewModel.clearSelectedNote()
+                notesViewModel.onClearSelectedNote()
             }
         },
         floatingActionButton = {
             NotesFub(isSelectedNote = selectedNote != null) {
                 if (selectedNote != null) {
-                    notesViewModel.editSelectedNote(title, text)
+                    notesViewModel.onSaveNote(title, text)
                 } else {
-                    notesViewModel.addSelectedNote("", "")
+                    notesViewModel.onSelectNote()
                 }
             }
         },
@@ -58,13 +56,13 @@ fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
                 onChangeTitle = { title = it },
                 onChangeText = { text = it }
             ) {
-                notesViewModel.clearSelectedNote()
+                notesViewModel.onClearSelectedNote()
             }
         }
 
         AnimatedVisibility(visible = selectedNote == null) {
             NotesListView(Modifier.padding(it), notes) {
-                notesViewModel.setSelectedNote(it)
+                notesViewModel.onSelectNote(it)
             }
         }
     }
@@ -92,7 +90,8 @@ private fun NotesListView(
 @Composable
 private fun NoteItemView(note: Note, setSelectedNote: () -> Unit = {}) {
     Card(
-        Modifier.clickable { setSelectedNote() }
+        Modifier.clickable { setSelectedNote() },
+        backgroundColor = MaterialTheme.colors.surface
     ) {
         Column(
             modifier = Modifier
@@ -101,13 +100,14 @@ private fun NoteItemView(note: Note, setSelectedNote: () -> Unit = {}) {
         ) {
             Text(
                 text = note.title,
-                style = MaterialTheme.typography.titleMedium
+                color = MaterialTheme.colors.onSurface,
+                style = MaterialTheme.typography.h6
             )
 
             Text(
                 text = note.text,
-                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
+                color = MaterialTheme.colors.onSurface,
                 overflow = TextOverflow.Ellipsis
             )
         }

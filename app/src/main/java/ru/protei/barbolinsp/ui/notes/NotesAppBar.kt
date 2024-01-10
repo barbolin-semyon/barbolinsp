@@ -4,14 +4,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ru.protei.barbolinsp.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesAppBar(
     isSelectedNote: Boolean,
@@ -29,11 +26,9 @@ fun NotesAppBar(
 ) {
     TopAppBar(
         title = { Text("Skat.apps") },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            titleContentColor = MaterialTheme.colorScheme.onBackground,
-            actionIconContentColor = MaterialTheme.colorScheme.onBackground,
-        ),
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.onBackground,
+
 
         navigationIcon = {
             AnimatedVisibility(visible = isSelectedNote) {
@@ -42,7 +37,7 @@ fun NotesAppBar(
                         modifier = Modifier.size(32.dp),
                         painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "change theme",
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = MaterialTheme.colors.onBackground,
                     )
                 }
             }
@@ -54,7 +49,7 @@ fun NotesAppBar(
                     modifier = Modifier.size(48.dp),
                     painter = painterResource(id = R.drawable.ic_change_theme),
                     contentDescription = "change theme",
-                    tint = MaterialTheme.colorScheme.onBackground,
+                    tint = MaterialTheme.colors.onBackground,
                 )
             }
         }
