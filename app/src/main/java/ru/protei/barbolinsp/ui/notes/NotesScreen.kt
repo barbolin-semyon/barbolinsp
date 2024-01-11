@@ -17,6 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,25 +26,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 
 @Composable
 fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
-    val notes by notesViewModel.notes.collectAsState() // Список заметок
+    val notes by notesViewModel.notes.collectAsState()
 
     val selectedNote by notesViewModel.selectedNote.collectAsState()
     var title by remember(selectedNote) { mutableStateOf(selectedNote?.title ?: "") }
     var text by remember(selectedNote) { mutableStateOf(selectedNote?.text ?: "") }
 
+    var keySort by remember { mutableStateOf(KeySort.ASC) }
+    LaunchedEffect(key1 = keySort, block = {
+        notesViewModel.onChangeKeySort(keySort)
+    })
+
     Scaffold(
         topBar = {
             NotesAppBar(
-                isSelectedNote = selectedNote != null,
+                keySort = keySort,
                 onChangeTheme = changeTheme,
                 onDeleteAllNotes = { notesViewModel.onDeleteAllNotes() },
-            ) {
-                notesViewModel.onClearSelectedNote()
-            }
+                onChangeKeySort = { keySort = it }
+            )
         },
         floatingActionButton = {
             NotesFub(isSelectedNote = selectedNote != null) {

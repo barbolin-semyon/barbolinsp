@@ -2,10 +2,12 @@ package ru.protei.barbolinsp.ui.notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 import ru.protei.barbolinsp.domain.NotesUseCase
 
@@ -28,7 +30,7 @@ class NotesViewModel(
                 }
         }
 
-        /*viewModelScope.launch {
+        viewModelScope.launch {
             notesUseCase.fillWithInitialNotes(
                 listOf(
                     Note(title = "Note 1", text = "Description 1"),
@@ -45,7 +47,13 @@ class NotesViewModel(
                     Note(title = "Note 5", text = "Description 5"),
                 )
             )
-        }*/
+        }
+    }
+
+    fun onChangeKeySort(keySort: KeySort) = viewModelScope.launch {
+        notesUseCase.notesFlow(keySort).collect {
+            _notes.value = it
+        }
     }
 
     fun onSelectNote(note: Note = Note(title = "", text = "")) {

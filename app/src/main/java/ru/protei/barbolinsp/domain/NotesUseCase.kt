@@ -18,8 +18,8 @@ class NotesUseCase(private val notesRepository: NotesRepository) {
         }
     }
 
-    suspend fun notesFlow(isReverseSorted: Boolean = false): Flow<List<Note>> {
-        return if (isReverseSorted) {
+    suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<List<Note>> {
+        return if (keySort  == KeySort.DESC) {
             notesRepository.getAllNotesOfSortedDesc()
         } else {
             notesRepository.getAllNotesOfSortedAsc()
