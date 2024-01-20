@@ -2,6 +2,7 @@ package ru.protei.barbolinsp.ui.notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,8 +11,10 @@ import kotlinx.coroutines.launch
 import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 import ru.protei.barbolinsp.domain.NotesUseCase
+import javax.inject.Inject
 
-class NotesViewModel(
+@HiltViewModel
+class NotesViewModel @Inject constructor(
     private val notesUseCase: NotesUseCase
 ) : ViewModel() {
     private val _selectedNote = MutableStateFlow<Note?>(null)

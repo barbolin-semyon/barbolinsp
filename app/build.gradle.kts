@@ -77,4 +77,11 @@ dependencies {
     // Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
 
+    //dagger 2
+    val dagger_version= "2.48"
+    implementation ("com.google.dagger:dagger:$dagger_version")
+    kapt ("com.google.dagger:dagger-compiler:$dagger_version")
+
+    //hilt viewModel
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 }

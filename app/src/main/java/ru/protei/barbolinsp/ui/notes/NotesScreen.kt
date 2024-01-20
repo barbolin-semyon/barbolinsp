@@ -30,7 +30,7 @@ import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 
 @Composable
-fun NotesScreen(notesViewModel: NotesViewModel, changeTheme: () -> Unit) {
+fun NotesScreen(notesViewModel: NotesViewModel,changeTheme: () -> Unit) {
     val notes by notesViewModel.notes.collectAsState()
 
     val selectedNote by notesViewModel.selectedNote.collectAsState()

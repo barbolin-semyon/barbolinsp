@@ -1,8 +1,11 @@
 package ru.protei.barbolinsp.domain
 
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class NotesUseCase(private val notesRepository: NotesRepository) {
+class NotesUseCase @Inject constructor(
+    private val notesRepository: NotesRepository
+) {
     suspend fun fillWithInitialNotes(initialNotes: List<Note>) {
         notesRepository.deleteAll()
         for (note in initialNotes) {
@@ -19,7 +22,7 @@ class NotesUseCase(private val notesRepository: NotesRepository) {
     }
 
     suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<List<Note>> {
-        return if (keySort  == KeySort.DESC) {
+        return if (keySort == KeySort.DESC) {
             notesRepository.getAllNotesOfSortedDesc()
         } else {
             notesRepository.getAllNotesOfSortedAsc()
