@@ -55,7 +55,7 @@ class DatabaseRemoteModule {
     @Provides
     fun provideRetrofitClient(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl("https://api.github.com/repos/barbolin-semyon/barbolinsp/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
