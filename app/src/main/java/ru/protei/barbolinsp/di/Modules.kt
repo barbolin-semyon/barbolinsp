@@ -33,3 +33,33 @@ class DatabaseLocalModule {
         return notesDatabase.notesDao()
     }
 }
+
+@InstallIn(SingletonComponent::class)
+class DatabaseRemoteModule {
+    @Singleton
+    @Provides
+    fun provideHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader(
+                        "Authorization",
+                        "Bearer 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"
+                    ).build()
+                chain.proceed(request)
+            }
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofitClient(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+
+}
