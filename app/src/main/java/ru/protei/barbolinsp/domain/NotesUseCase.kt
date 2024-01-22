@@ -1,7 +1,7 @@
 package ru.protei.barbolinsp.domain
 
 import kotlinx.coroutines.flow.Flow
-import ru.protei.barbolinsp.data.NotesRepositoryDB
+import ru.protei.barbolinsp.data.local.NotesRepositoryDB
 import javax.inject.Inject
 
 class NotesUseCase @Inject constructor(

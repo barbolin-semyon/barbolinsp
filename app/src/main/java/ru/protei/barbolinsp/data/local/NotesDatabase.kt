@@ -1,4 +1,4 @@
-package ru.protei.barbolinsp.data
+package ru.protei.barbolinsp.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

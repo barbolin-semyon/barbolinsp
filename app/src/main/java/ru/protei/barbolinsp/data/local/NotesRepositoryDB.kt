@@ -1,6 +1,5 @@
-package ru.protei.barbolinsp.data
+package ru.protei.barbolinsp.data.local
 
-import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

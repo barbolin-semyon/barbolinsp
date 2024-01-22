@@ -1,4 +1,4 @@
-package ru.protei.barbolinsp.data
+package ru.protei.barbolinsp.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert

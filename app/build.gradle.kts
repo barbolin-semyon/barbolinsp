@@ -82,9 +82,16 @@ dependencies {
     // Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
 
-    //dagger 2
-    implementation("com.google.dagger:hilt-android:2.48")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
-    kapt ("com.google.dagger:hilt-android-compiler:2.48")
-    kapt ("androidx.hilt:hilt-compiler:1.1.0")
+    //dagger-hilt
+    val google_hilt_version = "2.48"
+    val androidx_hilt_version = "1.1.0"
+    implementation("com.google.dagger:hilt-android:$google_hilt_version")
+    implementation ("androidx.hilt:hilt-navigation-compose:$androidx_hilt_version")
+    kapt ("com.google.dagger:hilt-android-compiler:$google_hilt_version")
+    kapt ("androidx.hilt:hilt-compiler:$androidx_hilt_version")
+
+    //Retrofit
+    val retrofit_version = "2.9.0"
+    implementation ("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation ("com.squareup.retrofit2:converter-gson:$retrofit_version")
 }

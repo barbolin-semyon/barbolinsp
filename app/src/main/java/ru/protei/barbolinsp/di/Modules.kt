@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.DefineComponent
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import ru.protei.barbolinsp.data.NotesDao
-import ru.protei.barbolinsp.data.NotesDatabase
-import ru.protei.barbolinsp.data.NotesRepositoryDB
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.protei.barbolinsp.data.local.NotesDao
+import ru.protei.barbolinsp.data.local.NotesDatabase
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -20,11 +21,11 @@ class DatabaseLocalModule {
     @Provides
     fun provideDatabase(@ApplicationContext context: Context): NotesDatabase {
         return Room.databaseBuilder(
-                context,
-                NotesDatabase::class.java,
-                "notes.db"
-            ).build()
-        }
+            context,
+            NotesDatabase::class.java,
+            "notes.db"
+        ).build()
+    }
 
     @Singleton
     @Provides
