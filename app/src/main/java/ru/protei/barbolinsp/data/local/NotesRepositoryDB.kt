@@ -24,15 +24,15 @@ class NotesRepositoryDB @Inject constructor(
         return@withContext notesDao.insert(note)
     }
 
-    override suspend fun update(note: Note) = withContext(ioDispatcher) {
-        notesDao.update(note)
+    override suspend fun update(note: Note): Boolean = withContext(ioDispatcher) {
+        return@withContext notesDao.update(note) != null
     }
 
-    override suspend fun deleteById(id: Long) = withContext(ioDispatcher) {
-        notesDao.deleteById(id)
+    override suspend fun deleteById(id: Long): Boolean = withContext(ioDispatcher) {
+        return@withContext notesDao.deleteById(id) != null
     }
 
-    override suspend fun deleteAll() {
-        notesDao.deleteAll()
+    override suspend fun deleteAll(): Boolean = withContext(ioDispatcher) {
+        return@withContext notesDao.deleteAll() != null
     }
 }

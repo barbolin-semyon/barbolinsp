@@ -24,11 +24,11 @@ interface NotesDao {
     suspend fun insert(note: Note): Long
 
     @Update
-    suspend fun update(note: Note)
+    suspend fun update(note: Note): Int?
 
     @Query("DELETE FROM note WHERE id = :id")
-    suspend fun deleteById(id: Long)
+    suspend fun deleteById(id: Long): Int?
 
     @Query("DELETE FROM note")
-    suspend fun deleteAll()
+    suspend fun deleteAll(): Int?
 }
