@@ -1,6 +1,7 @@
 package ru.protei.barbolinsp.domain
 
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 interface NotesRepository {
     suspend fun getAllNotesOfSortedAsc(): Flow<List<Note>>

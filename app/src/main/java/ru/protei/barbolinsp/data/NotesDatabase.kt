@@ -9,6 +9,7 @@ import ru.protei.barbolinsp.domain.Note
     version = 1,
     exportSchema = false
 )
+
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun notesDao(): NotesDao
 }

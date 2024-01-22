@@ -1,37 +1,38 @@
 package ru.protei.barbolinsp.domain
 
 import kotlinx.coroutines.flow.Flow
+import ru.protei.barbolinsp.data.NotesRepositoryDB
 import javax.inject.Inject
 
 class NotesUseCase @Inject constructor(
-    private val notesRepository: NotesRepository
+    private val notesRepositoryDB: NotesRepositoryDB
 ) {
     suspend fun fillWithInitialNotes(initialNotes: List<Note>) {
-        notesRepository.deleteAll()
+        notesRepositoryDB.deleteAll()
         for (note in initialNotes) {
-            notesRepository.insert(note)
+            notesRepositoryDB.insert(note)
         }
     }
 
     suspend fun save(note: Note, actualNotes: List<Note>) {
         if (actualNotes.find { it.id == note.id } != null) {
-            notesRepository.update(note)
+            notesRepositoryDB.update(note)
         } else {
-            notesRepository.insert(note)
+            notesRepositoryDB.insert(note)
         }
     }
 
     suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<List<Note>> {
         return if (keySort == KeySort.DESC) {
-            notesRepository.getAllNotesOfSortedDesc()
+            notesRepositoryDB.getAllNotesOfSortedDesc()
         } else {
-            notesRepository.getAllNotesOfSortedAsc()
+            notesRepositoryDB.getAllNotesOfSortedAsc()
         }
     }
 
     suspend fun deleteById(id: Long) {
-        notesRepository.deleteById(id)
+        notesRepositoryDB.deleteById(id)
     }
 
-    suspend fun deleteAll() = notesRepository.deleteAll()
+    suspend fun deleteAll() = notesRepositoryDB.deleteAll()
 }

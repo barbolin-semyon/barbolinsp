@@ -33,7 +33,7 @@ class NotesViewModel @Inject constructor(
                 }
         }
 
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             notesUseCase.fillWithInitialNotes(
                 listOf(
                     Note(title = "Note 1", text = "Description 1"),
@@ -50,7 +50,7 @@ class NotesViewModel @Inject constructor(
                     Note(title = "Note 5", text = "Description 5"),
                 )
             )
-        }
+        }*/
     }
 
     fun onChangeKeySort(keySort: KeySort) = viewModelScope.launch {
