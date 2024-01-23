@@ -7,11 +7,11 @@ import kotlinx.coroutines.withContext
 import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 import ru.protei.barbolinsp.domain.NotesLocalRepository
-import ru.protei.barbolinsp.domain.NotesRepository
 import javax.inject.Inject
 
 class NotesRepositoryDB @Inject constructor(
     private val notesDao: NotesDao,
+    private val undownloadedNotesDao: UndownloadedNotesDao
 ) : NotesLocalRepository {
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 
@@ -36,5 +36,21 @@ class NotesRepositoryDB @Inject constructor(
 
     override suspend fun deleteAll(): Boolean = withContext(ioDispatcher) {
         return@withContext notesDao.deleteAll() != null
+    }
+
+    override suspend fun getNoteById(id: Long): Note? = withContext(ioDispatcher) {
+        return@withContext notesDao.getById(id)
+    }
+
+    override suspend fun getAllUndownloadedNotes(): List<Note> = withContext(ioDispatcher) {
+        return@withContext undownloadedNotesDao.get()
+    }
+
+    override suspend fun insertUndownloadedNote(note: Note): Long = withContext(ioDispatcher){
+        return@withContext undownloadedNotesDao.insert(note)
+    }
+
+    override suspend fun deleteUndownloadedById(id: Long): Boolean = withContext(ioDispatcher){
+        return@withContext undownloadedNotesDao.deleteById(id) != null
     }
 }
