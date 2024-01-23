@@ -1,6 +1,7 @@
 package ru.protei.barbolinsp.domain
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import ru.protei.barbolinsp.data.local.NotesRepositoryDB
 import javax.inject.Inject
 
@@ -22,12 +23,8 @@ class NotesUseCase @Inject constructor(
         }
     }
 
-    suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<List<Note>> {
-        return if (keySort == KeySort.DESC) {
-            notesRepositoryDB.getAllNotesOfSortedDesc()
-        } else {
-            notesRepositoryDB.getAllNotesOfSortedAsc()
-        }
+    suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<List<Note>> = flow {
+        notesRepositoryDB.getAllNotes(keySort)
     }
 
     suspend fun deleteById(id: Long) {

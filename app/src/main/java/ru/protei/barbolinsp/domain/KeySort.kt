@@ -1,5 +1,5 @@
 package ru.protei.barbolinsp.domain
 
-enum class KeySort {
-    ASC, DESC
+enum class KeySort(val value: String) {
+    ASC("asc"), DESC("desc")
 }

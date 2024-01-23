@@ -1,7 +1,5 @@
 package ru.protei.barbolinsp.data.remote
 
-import androidx.room.Delete
-import androidx.room.Update
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

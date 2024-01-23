@@ -4,20 +4,22 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
+import ru.protei.barbolinsp.domain.NotesLocalRepository
 import ru.protei.barbolinsp.domain.NotesRepository
 import javax.inject.Inject
 
 class NotesRepositoryDB @Inject constructor(
     private val notesDao: NotesDao,
-) : NotesRepository {
+) : NotesLocalRepository {
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-    override suspend fun getAllNotesOfSortedAsc(): Flow<List<Note>> = withContext(ioDispatcher) {
-        return@withContext notesDao.getAllOfSortedAsc()
-    }
 
-    override suspend fun getAllNotesOfSortedDesc(): Flow<List<Note>> = withContext(ioDispatcher) {
-        return@withContext notesDao.getAllOfSortedDesc()
+    override suspend fun getAllNotes(keySort: KeySort): Flow<List<Note>> {
+        return when (keySort) {
+            KeySort.ASC -> notesDao.getAllOfSortedAsc()
+            KeySort.DESC -> notesDao.getAllOfSortedDesc()
+        }
     }
 
     override suspend fun insert(note: Note): Long = withContext(ioDispatcher) {
