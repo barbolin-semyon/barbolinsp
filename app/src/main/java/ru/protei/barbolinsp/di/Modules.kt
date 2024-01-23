@@ -12,6 +12,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.protei.barbolinsp.data.local.NotesDao
 import ru.protei.barbolinsp.data.local.NotesDatabase
+import ru.protei.barbolinsp.data.local.UndownloadedNotesDao
+import ru.protei.barbolinsp.data.local.UndownloadedNotesDatabase
+import ru.protei.barbolinsp.data.remote.NotesGitHubApi
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -24,7 +27,7 @@ class DatabaseLocalModule {
             context,
             NotesDatabase::class.java,
             "notes.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Singleton
@@ -32,8 +35,25 @@ class DatabaseLocalModule {
     fun provideDao(notesDatabase: NotesDatabase): NotesDao {
         return notesDatabase.notesDao()
     }
+
+    @Singleton
+    @Provides
+    fun provideUndownloadedNotesDatabase(@ApplicationContext context: Context): UndownloadedNotesDatabase {
+        return Room.databaseBuilder(
+            context,
+            UndownloadedNotesDatabase::class.java,
+            "undownloaded_notes.db"
+        ).fallbackToDestructiveMigration().build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUndownloadedNotesDao(notesDatabase: UndownloadedNotesDatabase): UndownloadedNotesDao {
+        return notesDatabase.notesDao()
+    }
 }
 
+@Module
 @InstallIn(SingletonComponent::class)
 class DatabaseRemoteModule {
     @Singleton
@@ -44,7 +64,7 @@ class DatabaseRemoteModule {
                 val request = chain.request().newBuilder()
                     .addHeader(
                         "Authorization",
-                        "Bearer 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"
+                        "Bearer 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"
                     ).build()
                 chain.proceed(request)
             }
@@ -61,5 +81,8 @@ class DatabaseRemoteModule {
             .build()
     }
 
-
+    @Singleton
+    @Provides
+    fun provideNotesGitHubApi(retrofit: Retrofit): NotesGitHubApi =
+        retrofit.create(NotesGitHubApi::class.java)
 }
