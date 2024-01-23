@@ -3,7 +3,6 @@ package ru.protei.barbolinsp.ui.notes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -11,6 +10,7 @@ import kotlinx.coroutines.launch
 import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 import ru.protei.barbolinsp.domain.NotesUseCase
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,10 +27,10 @@ class NotesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            notesUseCase.notesFlow()
+            /*notesUseCase.notesFlow()
                 .collect {
                     _notes.value = it
-                }
+                }*/
         }
 
         /*viewModelScope.launch {
@@ -59,7 +59,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    fun onSelectNote(note: Note = Note(title = "", text = "")) {
+    fun onSelectNote(note: Note = Note(title = "", text = "", updateAt = Date())) {
         _selectedNote.value = note
     }
 
@@ -75,8 +75,9 @@ class NotesViewModel @Inject constructor(
             _selectedNote.update { note ->
                 Note(
                     id = note!!.id,
-                    title = title ?: note.title, // Мы уверены, что это не null
-                    text = text ?: note.text
+                    title = title,
+                    text = text,
+                    updateAt = Date()
                 )
             }
             viewModelScope.launch {
@@ -94,7 +95,7 @@ class NotesViewModel @Inject constructor(
 
     fun onDeleteAllNotes() {
         viewModelScope.launch {
-            notesUseCase.deleteAll()
+            notesUseCase.deleteAll(notes.value)
         }
     }
 }

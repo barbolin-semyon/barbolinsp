@@ -11,13 +11,14 @@ import javax.inject.Inject
 class NotesGitHubRepository @Inject constructor(
     private val notesGitHubApi: NotesGitHubApi
 ) : NotesRemoteRepository {
-    val ioDispatcher = Dispatchers.IO
+    private val ioDispatcher = Dispatchers.IO
 
     private fun toNote(issue: GitHubIssue): Note {
         return Note(
             id = issue.number,
             title = issue.title,
-            text = issue.body
+            text = issue.body ?: "",
+            updateAt = issue.updatedAt
         )
     }
 
@@ -25,7 +26,8 @@ class NotesGitHubRepository @Inject constructor(
         return GitHubIssue(
             number = note.id,
             title = note.title,
-            body = note.text
+            body = note.text,
+            updatedAt = note.updateAt!!
         )
     }
 
@@ -75,7 +77,7 @@ class NotesGitHubRepository @Inject constructor(
 
     override suspend fun deleteById(id: Long): Boolean = withContext(ioDispatcher) {
         return@withContext try {
-            val result = notesGitHubApi.close(id)
+            val result = notesGitHubApi.close(id, hashMapOf("state" to "closed"))
             if (!result.isSuccessful) {
                 Log.w("NotesGithubRepository", "Can't insert note $result")
                 false
