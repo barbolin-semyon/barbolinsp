@@ -22,6 +22,6 @@ interface NotesGitHubApi {
         @Body issue: GitHubIssue
     ): Response<GitHubIssue>
 
-    @PUT("issues/{number}/lock")
-    suspend fun close(@Path("number") number: Long):Response<Unit>
+    @PATCH("issues/{number}")
+    suspend fun close(@Path("number") number: Long, @Body hashMap: HashMap<String, String>):Response<Unit>
 }
