@@ -14,6 +14,9 @@ import javax.inject.Inject
 
 @Dao
 interface NotesDao {
+    @Query("SELECT * FROM note WHERE id= :id")
+    fun getById(id: Long): Note?
+
     @Query("SELECT * FROM note")
     fun getAllOfSortedAsc(): Flow<List<Note>>
 
