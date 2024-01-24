@@ -16,7 +16,7 @@ class NotesGitHubRepository @Inject constructor(
     private fun toNote(issue: GitHubIssue): Note {
         return Note(
             id = issue.number,
-            title = issue.title,
+            title = issue.title ?: "",
             text = issue.body ?: "",
             updateAt = issue.updatedAt
         )

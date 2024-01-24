@@ -1,9 +1,7 @@
 package ru.protei.barbolinsp.domain
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import ru.protei.barbolinsp.data.local.NotesRepositoryDB
 import ru.protei.barbolinsp.data.remote.NotesGitHubRepository
 import javax.inject.Inject
@@ -12,13 +10,6 @@ class NotesUseCase @Inject constructor(
     private val notesRepositoryDB: NotesRepositoryDB,
     private val notesGitHubRepository: NotesGitHubRepository
 ) {
-    suspend fun fillWithInitialNotes(initialNotes: List<Note>) {
-        notesRepositoryDB.deleteAll()
-        for (note in initialNotes) {
-            notesRepositoryDB.insert(note)
-        }
-    }
-
     suspend fun save(note: Note, actualNotes: List<Note>) {
         if (actualNotes.find { it.id == note.id } != null) {
             notesGitHubRepository.update(note)
@@ -36,8 +27,8 @@ class NotesUseCase @Inject constructor(
         }
     }
 
-    suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<List<Note>> = flow {
-        notesRepositoryDB.getAllNotes(keySort)
+    suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<StateLoading<List<Note>>> = flow {
+        emit(StateLoading.Loading)
         val remoteNotes = notesGitHubRepository.getAllNotes(keySort)
         val localUndownloadedNotes = notesRepositoryDB.getAllUndownloadedNotes()
 
@@ -46,14 +37,14 @@ class NotesUseCase @Inject constructor(
         }
 
         remoteNotes.forEach { currentRemoteNote ->
-            saveRemoteNoteToDB(
+            saveRemoteNoteToDB (
                 remoteNote = currentRemoteNote,
                 localNote = notesRepositoryDB.getNoteById(currentRemoteNote.id)
             )
         }
 
         notesRepositoryDB.getAllNotes(keySort).collect {
-            emit(it)
+            emit(StateLoading.Success(it))
         }
     }
 

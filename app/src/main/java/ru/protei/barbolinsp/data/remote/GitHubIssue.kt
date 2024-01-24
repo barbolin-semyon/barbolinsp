@@ -5,7 +5,7 @@ import java.util.Date
 
 data class GitHubIssue(
     val number: Long,
-    val title: String,
+    val title: String?,
     val body: String?,
     @SerializedName("updated_at")
     val updatedAt: Date,

@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import ru.protei.barbolinsp.domain.KeySort
 import ru.protei.barbolinsp.domain.Note
 import ru.protei.barbolinsp.domain.NotesUseCase
+import ru.protei.barbolinsp.domain.StateLoading
 import java.util.Date
 import javax.inject.Inject
 
@@ -21,9 +22,13 @@ class NotesViewModel @Inject constructor(
     val selectedNote: StateFlow<Note?>
         get() = _selectedNote
 
-    private val _notes = MutableStateFlow<List<Note>>(emptyList())
-    val notes: StateFlow<List<Note>>
-        get() = _notes
+    private val _notesState = MutableStateFlow<StateLoading<List<Note>>>(
+        StateLoading.Success(
+            emptyList<Note>()
+        )
+    )
+    val notesState: StateFlow<StateLoading<List<Note>>>
+        get() = _notesState
 
     init {
         viewModelScope.launch {
@@ -55,7 +60,7 @@ class NotesViewModel @Inject constructor(
 
     fun onChangeKeySort(keySort: KeySort) = viewModelScope.launch {
         notesUseCase.notesFlow(keySort).collect {
-            _notes.value = it
+            _notesState.value = it
         }
     }
 
@@ -81,7 +86,10 @@ class NotesViewModel @Inject constructor(
                 )
             }
             viewModelScope.launch {
-                notesUseCase.save(note = _selectedNote.value!!, actualNotes = _notes.value)
+                notesUseCase.save(
+                    note = _selectedNote.value!!,
+                    actualNotes = (notesState.value as StateLoading.Success<List<Note>>).data
+                )
             }
         }
         _selectedNote.value = null
@@ -95,7 +103,7 @@ class NotesViewModel @Inject constructor(
 
     fun onDeleteAllNotes() {
         viewModelScope.launch {
-            notesUseCase.deleteAll(notes.value)
+            notesUseCase.deleteAll((notesState.value as StateLoading.Success<List<Note>>).data)
         }
     }
 }

@@ -64,7 +64,7 @@ class DatabaseRemoteModule {
                 val request = chain.request().newBuilder()
                     .addHeader(
                         "Authorization",
-                        "Bearer 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"
+                        "Bearer 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"
                     ).build()
                 chain.proceed(request)
             }
