@@ -27,7 +27,7 @@ class NotesUseCase @Inject constructor(
         }
     }
 
-    suspend fun notesFlow(keySort: KeySort = KeySort.ASC): Flow<StateLoading<List<Note>>> = flow {
+    suspend fun loadNotes(keySort: KeySort = KeySort.ASC): Flow<StateLoading<List<Note>>> = flow {
         emit(StateLoading.Loading)
         val remoteNotes = notesGitHubRepository.getAllNotes(keySort)
         val localUndownloadedNotes = notesRepositoryDB.getAllUndownloadedNotes()

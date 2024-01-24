@@ -59,7 +59,7 @@ class NotesViewModel @Inject constructor(
     }
 
     fun onChangeKeySort(keySort: KeySort) = viewModelScope.launch {
-        notesUseCase.notesFlow(keySort).collect {
+        notesUseCase.loadNotes(keySort).collect {
             _notesState.value = it
         }
     }
